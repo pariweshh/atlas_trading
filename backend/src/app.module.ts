@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth';
 import { MarketDataModule } from './modules/market-data';
 import { TechnicalAnalysisModule } from './modules/technical-analysis';
 import { LLMAnalysisModule } from './modules/llm-analysis';
+import { WebSocketModule } from './modules/websocket/websocket.module';
 
 @Module({
   imports: [
@@ -35,6 +36,8 @@ import { LLMAnalysisModule } from './modules/llm-analysis';
 
     // LLM Analysis (Claude)
     LLMAnalysisModule,
+
+    WebSocketModule,
 
     // rate limiting
     ThrottlerModule.forRoot([

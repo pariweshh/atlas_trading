@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Brain } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { PriceTicker } from "@/components/dashboard/price-ticker"
+import { RealtimeTicker } from "@/components/dashboard/realtime-ticker"
 import { TechnicalPanel } from "@/components/dashboard/technical-panel"
 import { AIRecommendation } from "@/components/dashboard/ai-recommendation"
 import { Watchlist } from "@/components/dashboard/watchlist"
@@ -12,7 +12,6 @@ import { MultiAnalysis } from "@/components/dashboard/multi-analysis"
 import { TradeSettings } from "@/components/dashboard/trade-settings"
 import { PriceChart } from "@/components/charts/price-chart"
 import {
-  useTicker,
   useTechnicalAnalysis,
   useAIAnalysis,
   useOHLCV,
@@ -41,7 +40,6 @@ export default function DashboardPage() {
   const [accountSize, setAccountSize] = useState(10000)
   const [riskPercent, setRiskPercent] = useState(1)
 
-  const { data: ticker, isLoading: isTickerLoading } = useTicker(selectedSymbol)
   const { data: ohlcv, isLoading: isOHLCVLoading } = useOHLCV(
     selectedSymbol,
     selectedTimeframe,
@@ -117,11 +115,7 @@ export default function DashboardPage() {
 
         {/* Center Column */}
         <div className="col-span-6 space-y-6">
-          <PriceTicker
-            ticker={ticker}
-            symbol={selectedSymbol}
-            isLoading={isTickerLoading}
-          />
+          <RealtimeTicker symbol={selectedSymbol} />
           <PriceChart
             data={ohlcv}
             symbol={selectedSymbol}

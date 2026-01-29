@@ -2,6 +2,7 @@
 
 import { Bell, Search } from "lucide-react"
 import { useAuthStore } from "@/stores/auth-store"
+import { ConnectionStatus } from "@/components/ui/connection-status"
 
 export function Header() {
   const user = useAuthStore((state) => state.user)
@@ -20,6 +21,9 @@ export function Header() {
 
       {/* Right side */}
       <div className="flex items-center gap-4">
+        {/* Connection Status */}
+        <ConnectionStatus />
+
         {/* Notifications */}
         <button className="relative p-2 text-zinc-400 hover:text-zinc-100 transition-colors">
           <Bell className="h-5 w-5" />
