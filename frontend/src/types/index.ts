@@ -183,3 +183,51 @@ export interface ApiResponse<T> {
 export type Timeframe = "1m" | "5m" | "15m" | "30m" | "1h" | "4h" | "1d" | "1w"
 export type TradingStyle = "SCALPING" | "DAY_TRADING" | "SWING" | "POSITION"
 export type AssetClass = "FOREX" | "CRYPTO" | "ETF"
+
+// Alert Types
+export enum AlertType {
+  PRICE_ABOVE = "PRICE_ABOVE",
+  PRICE_BELOW = "PRICE_BELOW",
+  PRICE_CROSS = "PRICE_CROSS",
+  RSI_OVERBOUGHT = "RSI_OVERBOUGHT",
+  RSI_OVERSOLD = "RSI_OVERSOLD",
+  MACD_BULLISH = "MACD_BULLISH",
+  MACD_BEARISH = "MACD_BEARISH",
+  AI_OPPORTUNITY = "AI_OPPORTUNITY",
+}
+
+export enum AlertStatus {
+  ACTIVE = "ACTIVE",
+  TRIGGERED = "TRIGGERED",
+  EXPIRED = "EXPIRED",
+  CANCELLED = "CANCELLED",
+}
+
+export interface Alert {
+  id: string
+  userId: string
+  symbol: string
+  type: AlertType
+  status: AlertStatus
+  targetPrice?: number
+  rsiThreshold?: number
+  minSignalStrength?: number
+  timeframe?: string
+  note?: string
+  repeatAlert: boolean
+  triggeredAt?: string
+  triggeredPrice?: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CreateAlertInput {
+  symbol: string
+  type: AlertType
+  targetPrice?: number
+  rsiThreshold?: number
+  minSignalStrength?: number
+  timeframe?: string
+  note?: string
+  repeatAlert?: boolean
+}
