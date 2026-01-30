@@ -20,6 +20,10 @@ interface BinanceTickerData {
   p: string; // Price change
 }
 
+interface BinanceStreamMessage {
+  data: BinanceTickerData;
+}
+
 @Injectable()
 export class BinanceStreamService implements OnModuleInit, OnModuleDestroy {
   private logger = new Logger('BinanceStream');
@@ -53,16 +57,18 @@ export class BinanceStreamService implements OnModuleInit, OnModuleDestroy {
 
     this.ws.on('message', (data: Buffer) => {
       try {
-        const parsed = JSON.parse(data.toString());
+        const parsed = JSON.parse(data.toString()) as BinanceStreamMessage;
         if (parsed.data) {
           this.handleTickerUpdate(parsed.data);
         }
-      } catch (error) {
-        this.logger.error(`Failed to parse message: ${error.message}`);
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Unknown error';
+        this.logger.error(`Failed to parse message: ${errorMessage}`);
       }
     });
 
-    this.ws.on('error', (error) => {
+    this.ws.on('error', (error: Error) => {
       this.logger.error(`WebSocket error: ${error.message}`);
     });
 
@@ -122,27 +128,21 @@ export class BinanceStreamService implements OnModuleInit, OnModuleDestroy {
   private handleTickerUpdate(data: BinanceTickerData) {
     if (data.e !== '24hrTicker') return;
 
-    const symbol = this.formatSymbol(data.s);
+    const sym = this.formatSymbol(data.s);
 
-    const ticker = {
-      symbol,
-      bid: parseFloat(data.c), // Using close as bid approximation
+    const tickerData = {
+      bid: parseFloat(data.c),
       ask: parseFloat(data.c),
       last: parseFloat(data.c),
-      open: parseFloat(data.o),
-      high: parseFloat(data.h),
-      low: parseFloat(data.l),
       volume24h: parseFloat(data.v),
-      quoteVolume24h: parseFloat(data.q),
       change24h: parseFloat(data.p),
       changePercent24h: parseFloat(data.P),
     };
 
-    this.wsGateway.broadcastTicker(symbol, ticker);
+    this.wsGateway.broadcastTicker(sym, tickerData);
   }
 
   private formatSymbol(binanceSymbol: string): string {
-    // Convert BTCUSDT to BTC/USDT
     if (binanceSymbol.endsWith('USDT')) {
       return `${binanceSymbol.slice(0, -4)}/USDT`;
     }
@@ -151,8 +151,6 @@ export class BinanceStreamService implements OnModuleInit, OnModuleDestroy {
 
   subscribeToSymbol(symbol: string) {
     this.subscribedSymbols.add(symbol);
-    // For dynamic subscription, you'd need to use the combined stream approach
-    // or reconnect with new streams
   }
 
   unsubscribeFromSymbol(symbol: string) {

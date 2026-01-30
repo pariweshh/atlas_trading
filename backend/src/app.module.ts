@@ -12,6 +12,7 @@ import { MarketDataModule } from './modules/market-data';
 import { TechnicalAnalysisModule } from './modules/technical-analysis';
 import { LLMAnalysisModule } from './modules/llm-analysis';
 import { WebSocketModule } from './modules/websocket/websocket.module';
+import { AlertsModule } from './modules/alerts/alerts.module';
 
 @Module({
   imports: [
@@ -38,6 +39,8 @@ import { WebSocketModule } from './modules/websocket/websocket.module';
     LLMAnalysisModule,
 
     WebSocketModule,
+
+    AlertsModule,
 
     // rate limiting
     ThrottlerModule.forRoot([
